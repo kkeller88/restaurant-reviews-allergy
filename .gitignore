@@ -1,0 +1,11 @@
+__pycache__/
+*.DS_Store
+
+build/
+dist/
+eggs/
+*.egg-info
+
+data/
+notes/
+scripts/ad_hoc
