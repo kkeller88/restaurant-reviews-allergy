@@ -23,9 +23,9 @@ def _select_open_restaurants(businesses):
         ]
     return businesses
 
-def create_base_data(n_rows):
-    reviews = read_review_file("review", n_rows)
-    businesses = read_review_file("business", n_rows);
+def create_base_data(n_rows, **kwargs):
+    reviews = read_review_file("review", n_rows, **kwargs)
+    businesses = read_review_file("business", n_rows, **kwargs);
     open_restaurants = _select_open_restaurants(businesses)
     dataset = reviews[REVIEW_COLS] \
         .merge(
