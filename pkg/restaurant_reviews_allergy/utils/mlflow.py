@@ -2,6 +2,7 @@ import os
 import shutil
 import tempfile
 
+import pandas as pd
 import mlflow
 
 class MlflowArtifactLogger(object):
@@ -28,3 +29,15 @@ class MlflowArtifactLogger(object):
             shutil.rmtree(self.base)
         message = 'Artifacts from {b} logged to mlflow!'.format(b=self.base)
         print(message)
+
+def download_data(run_id, path, format='pkl'):
+    path = mlflow.tracking.MlflowClient().download_artifacts(
+        run_id=run_id,
+        path=path
+        )
+    if format=='pkl':
+        df = pd.read_pickle(path)
+    else:
+        message = 'format {f} was not recognized'.format(f=format)
+        raise ValueError(message)
+    return df
