@@ -1,10 +1,12 @@
-from restaurant_reviews_allergy.dataset.dataset import Dataset
+import mlflow
+
+from restaurant_reviews_allergy.utils.mlflow import MlflowArtifactLogger, download_data
 from restaurant_reviews_allergy.review_parser.allergen_search import simple_allergen_search
 
 
-def main(dataset_name, allergens):
-    dataset = Dataset(dataset_name)
-    sentences = dataset.load_data('sentences')
+def main(run_id, allergens):
+    mlflow.set_experiment('restaurant-reviews-allergy')
+    sentences = download_data(run_id, 'sentences.pkl')
 
     for allergen in allergens:
         sentences['is_' + allergen] = [
@@ -18,4 +20,4 @@ def main(dataset_name, allergens):
 
 
 if __name__ == '__main__':
-    main('20200215112441', ['gluten', 'soy', 'nut'])
+    main('ce4ebbe5c6b944cb80784756266cad31', ['gluten', 'soy', 'nut'])
