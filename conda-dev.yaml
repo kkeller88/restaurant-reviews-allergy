@@ -1,0 +1,12 @@
+name: restaurant-reviews-allergy
+
+dependencies:
+    - python=3.7
+    - numpy
+    - pandas
+    - sklearn
+    - pip:
+      - spacy
+      - tensorflow
+      - tensorflow-hub
+      - pytest
