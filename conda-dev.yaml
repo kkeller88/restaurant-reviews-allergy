@@ -1,11 +1,11 @@
-name: restaurant-reviews-allergy
+name: restaurant-reviews-allergy-dev
 
 dependencies:
     - python=3.7
     - numpy
     - pandas
-    - sklearn
     - pip:
+      - sklearn
       - spacy
       - tensorflow
       - tensorflow-hub
