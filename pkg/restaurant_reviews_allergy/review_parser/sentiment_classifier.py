@@ -10,8 +10,10 @@ import tensorflow_hub as hub
 # TODO: Add in additional methods for cross validation, loading and saving
 #   models, etc. Just laying down basic framework.
 class SentimentClassifier(object):
-    def __init__(self):
+    def __init__(self, estimator=None, encoder=None):
         self.outcome_name = "sentiment"
+        self.estimator = estimator
+        self.encoder = encoder
 
     def encode_outcome(self, outcome):
         try:
