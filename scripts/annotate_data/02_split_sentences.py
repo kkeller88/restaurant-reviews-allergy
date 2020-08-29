@@ -1,6 +1,7 @@
 import pandas as pd
+import mlflow
 
-from restaurant_reviews_allergy.dataset.dataset import Dataset
+from restaurant_reviews_allergy.utils.mlflow import MlflowArtifactLogger, download_data
 from restaurant_reviews_allergy.review_parser.sentence_splitter import SentenceSplitter
 
 
@@ -14,18 +15,22 @@ def _extract_sentence_data(base_data):
         .cumcount()
     return sentences
 
-def main(dataset_name):
-    dataset = Dataset(dataset_name)
-    base_data = dataset.load_data('base_data')
+def main(run_id):
+    mlflow.set_experiment('restaurant-reviews-allergy')
+    base_data = download_data(run_id, 'base_data.pkl')
 
     sentence_splitter = SentenceSplitter()
     base_data['sentences'] = [
         sentence_splitter.split_sentences(x)
         for x in base_data['text']
         ]
-
     sentences = _extract_sentence_data(base_data)
-    dataset.save_data(sentences, 'sentences')
+
+    mlflow.log_param('run_id', run_id)
+    mlflow.set_tag('step', 'split_sentences')
+    logger = MlflowArtifactLogger()
+    logger.add_artifact(sentences, 'sentences.pkl')
+    logger.log_artifacts('')
 
 if __name__ == '__main__':
-    main(dataset_name='20200215134336')
+    main(run_id='e1d699f5f43845ce90be0026d1c49b30')
