@@ -1,6 +1,7 @@
 import os
 import shutil
 import tempfile
+import json
 
 import pandas as pd
 import mlflow
@@ -10,7 +11,6 @@ class MlflowArtifactLogger(object):
         self.cleanup_after = cleanup_after
         if base is None:
             self.base = tempfile.mkdtemp()
-            #os.makedirs(self.base)
         else:
             self.base = base
 
@@ -18,6 +18,10 @@ class MlflowArtifactLogger(object):
         path = os.path.join(self.base, name)
         if format=='pkl':
             artifact.to_pickle(path)
+            print('Artifact written to: ', path)
+        if format=='json':
+            with open(path, 'w') as file:
+                json.dump(artifact, file)
             print('Artifact written to: ', path)
         else:
             message = 'format {f} was not recognized'.format(f=format)
