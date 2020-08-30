@@ -18,7 +18,6 @@ from tensorflow.python.keras.models import Model
 from restaurant_reviews_allergy.package_data.package_data import sentiment_training_data
 
 
-# TODO: Original model was 1.0; using compat but might want to look at updates
 class SentimentClassifier(object):
     def __init__(self, estimator=None, encoder=None):
         self.outcome_name = "sentiment"
@@ -36,6 +35,8 @@ class SentimentClassifier(object):
             print('New label encoder created!')
         return outcome
 
+    # TODO: update outcome encoding
+    # TODO: parsing of hidden unit values and other params
     def create_estimator(self, learning_rate=0.003, hidden_units=[500, 100],
                             optimizer='Adagrad', **kwargs):
         module_path = os.path.join(
@@ -49,7 +50,7 @@ class SentimentClassifier(object):
         pred = layers.Dense(1, activation='softmax')(dense)
         model = tf.keras.models.Model(input_text, pred)
         model.compile(loss='categorical_crossentropy',
-        	optimizer='adam', metrics=['accuracy'])
+        	optimizer=optimizer, metrics=['accuracy'])
 
         return model
 
