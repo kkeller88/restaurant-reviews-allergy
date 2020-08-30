@@ -119,10 +119,13 @@ class SentimentClassifier(object):
         self.estimator.save(model_path)
         with open(encoder_path, 'wb') as file:
             pickle.dump(self.encoder, file)
+        print(f'Logging data from {path_base}')
         return path_base
 
     @classmethod
     def load_model_artifacts(cls, path_base):
+        if 'model' not in os.listdir(path_base):
+            path_base = os.join(path_base, os.listdir(path_base)[0])
         model_path = os.path.join(path_base, 'model')
         encoder_path = os.path.join(path_base, 'label_encoder.pkl')
         model = tf.python.keras.models.load_model(model_path)
