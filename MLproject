@@ -1,0 +1,13 @@
+name: restaurant-reviews-allergy
+
+conda_env: conda-dev.yaml
+
+
+entry_points:
+  create_base_data:
+    command: "python scripts/annotate_data/01_create_base_data.py
+      --n_rows {n_rows} "
+    parameters:
+      n_rows:
+        type: float
+        default: 100

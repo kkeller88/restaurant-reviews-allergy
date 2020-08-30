@@ -19,7 +19,7 @@ class MlflowArtifactLogger(object):
         if format=='pkl':
             artifact.to_pickle(path)
             print('Artifact written to: ', path)
-        if format=='json':
+        elif format=='json':
             with open(path, 'w') as file:
                 json.dump(artifact, file)
             print('Artifact written to: ', path)
