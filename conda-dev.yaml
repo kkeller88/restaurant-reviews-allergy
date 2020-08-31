@@ -11,3 +11,4 @@ dependencies:
       - tensorflow-hub
       - pytest
       - mlflow
+      - fire

@@ -7,6 +7,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import log_loss
 import tensorflow as tf
 import tensorflow_hub as hub
+import fire
 
 from restaurant_reviews_allergy.package_data.package_data import sentiment_training_data
 from restaurant_reviews_allergy.review_parser.sentiment_classifier import SentimentClassifier
@@ -40,4 +41,4 @@ def main(config_name='single_model.json'):
     logger.log_artifacts('')
 
 if __name__ == '__main__':
-    main('small_test.json')
+    fire.Fire(main)

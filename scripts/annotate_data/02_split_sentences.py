@@ -1,5 +1,6 @@
 import pandas as pd
 import mlflow
+import fire
 
 from restaurant_reviews_allergy.utils.mlflow import MlflowArtifactLogger, download_data
 from restaurant_reviews_allergy.review_parser.sentence_splitter import SentenceSplitter
@@ -33,4 +34,4 @@ def main(run_id):
     logger.log_artifacts('')
 
 if __name__ == '__main__':
-    main(run_id='e1d699f5f43845ce90be0026d1c49b30')
+    fire.Fire(main)
