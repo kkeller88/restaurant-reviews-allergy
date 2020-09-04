@@ -6,6 +6,7 @@ import pickle
 
 import pandas as pd
 import numpy as np
+from sklearn import metrics as m
 from sklearn.preprocessing import LabelEncoder
 import tensorflow as tf
 import tensorflow_hub as hub
@@ -37,16 +38,17 @@ class SentimentClassifier(object):
 
     # TODO: update outcome encoding
     # TODO: parsing of hidden unit values and other params
-    def create_estimator(self, learning_rate=0.003, hidden_units=[500, 100],
-                            optimizer='Adagrad', **kwargs):
+    def create_estimator(self, learning_rate=0.003, hidden_units=[256],
+                            optimizer='Adagrad', embedding_model_trainable=False,
+                            **kwargs):
         module_path = os.path.join(
             pathlib.Path(__file__).parents[3],
             'data',
             'universal_sentence_encoder'
             )
         input_text = tf.keras.layers.Input(shape=[], dtype=tf.string)
-        embedding = hub.KerasLayer(module_path,trainable=True)(input_text)
-        dense = layers.Dense(256, activation='relu')(embedding)
+        embedding = hub.KerasLayer(module_path,trainable=embedding_model_trainable)(input_text)
+        dense = layers.Dense(hidden_units[0], activation='relu')(embedding)
         pred = layers.Dense(1, activation='softmax')(dense)
         model = tf.keras.models.Model(input_text, pred)
         model.compile(loss='categorical_crossentropy',
@@ -77,12 +79,20 @@ class SentimentClassifier(object):
         classes = [x[0] for x in predicted]
         return classes
 
-    # TODO: Better eval
+    # TODO: Log loss
     def evaluate_estimator(self, data):
         predicted = self.predict_estimator(data)
         actual = self.encode_outcome(data[self.outcome_name])
-        refit = sum(actual==predicted)/len(actual)
-        return refit, {}
+        f1_macro = m.f1_score(actual, predicted, average='macro')
+        f1_weighted = m.f1_score(actual, predicted, average='weighted')
+        accuracy = m.accuracy_score(actual, predicted)
+        refit = f1_macro
+        score = {
+            'f1_macro': f1_macro,
+            'f1_weighted': f1_weighted,
+            'accuracy': accuracy
+            }
+        return refit, score
 
     @classmethod
     def train_with_grid_search(cls, config, training_data, validation_data):
