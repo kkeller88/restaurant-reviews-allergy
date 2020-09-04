@@ -38,9 +38,16 @@ class SentimentClassifier(object):
 
     # TODO: update outcome encoding
     # TODO: parsing of hidden unit values and other params
-    def create_estimator(self, learning_rate=0.003, hidden_units=[256],
-                            optimizer='Adagrad', embedding_model_trainable=False,
-                            **kwargs):
+    def create_estimator(self, hidden_units=[256], optimizer='Adagrad',
+                            embedding_model_trainable=False, **kwargs):
+        def get_dense_layers(embedding, hidden_units):
+            previous_layer = embedding
+            for n_units in hidden_units:
+                print(f'Adding dense layer with {n_units} units!')
+                current_layer = layers.Dense(n_units, activation='relu')(previous_layer)
+                previous_layer = current_layer
+            return previous_layer
+
         module_path = os.path.join(
             pathlib.Path(__file__).parents[3],
             'data',
@@ -48,7 +55,7 @@ class SentimentClassifier(object):
             )
         input_text = tf.keras.layers.Input(shape=[], dtype=tf.string)
         embedding = hub.KerasLayer(module_path,trainable=embedding_model_trainable)(input_text)
-        dense = layers.Dense(hidden_units[0], activation='relu')(embedding)
+        dense = get_dense_layers(embedding, hidden_units)
         pred = layers.Dense(1, activation='softmax')(dense)
         model = tf.keras.models.Model(input_text, pred)
         model.compile(loss='categorical_crossentropy',
