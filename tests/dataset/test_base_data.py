@@ -6,7 +6,7 @@ import pandas as pd
 from restaurant_reviews_allergy.utils.data import read_review_file
 from restaurant_reviews_allergy.dataset.base_data import create_base_data, _select_open_restaurants
 
-FIXTURE_PATH = os.path.join(Path(__file__).parents[0], 'fixtures')
+FIXTURE_PATH = os.path.join(Path(__file__).parents[1], 'fixtures')
 
 @pytest.fixture
 def toy_business_data():
