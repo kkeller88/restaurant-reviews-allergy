@@ -7,7 +7,7 @@ import pickle
 import pandas as pd
 import numpy as np
 from sklearn import metrics as m
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 import tensorflow as tf
 import tensorflow_hub as hub
 import tensorflow_datasets as tfds
@@ -26,18 +26,21 @@ class SentimentClassifier(object):
         self.encoder = encoder
 
     def encode_outcome(self, outcome):
+        outcome = outcome.to_numpy().reshape(-1, 1)
         if self.encoder is not None:
             outcome = self.encoder.transform(outcome)
-            print('Using existing label encoder!')
+            print('Using existing one hot encoder!')
         else:
-            encoder = LabelEncoder()
+            encoder = OneHotEncoder(sparse=False)
             outcome = encoder.fit_transform(outcome)
             self.encoder = encoder
-            print('New label encoder created!')
+            print('New one hot encoder created!')
         return outcome
 
-    # TODO: update outcome encoding
-    # TODO: parsing of hidden unit values and other params
+    def decode_outcome(self, outcome):
+        outcome = self.encoder.inverse_transform(outcome).ravel()
+        return outcome
+
     def create_estimator(self, hidden_units=[256], optimizer='Adagrad',
                             embedding_model_trainable=False, **kwargs):
         def get_dense_layers(embedding, hidden_units):
@@ -53,10 +56,11 @@ class SentimentClassifier(object):
             'data',
             'universal_sentence_encoder'
             )
+        n_categories = len(self.encoder.categories_[0])
         input_text = tf.keras.layers.Input(shape=[], dtype=tf.string)
         embedding = hub.KerasLayer(module_path,trainable=embedding_model_trainable)(input_text)
         dense = get_dense_layers(embedding, hidden_units)
-        pred = layers.Dense(1, activation='softmax')(dense)
+        pred = layers.Dense(n_categories, activation='softmax')(dense)
         model = tf.keras.models.Model(input_text, pred)
         model.compile(loss='categorical_crossentropy',
         	optimizer=optimizer, metrics=['accuracy'])
@@ -65,12 +69,12 @@ class SentimentClassifier(object):
 
     def train_estimator(self, data, **kwargs):
         data = data.copy()
-        # TODO: function for this prep
-        # TODO: dummies?
-        data[self.outcome_name] = self.encode_outcome(data[self.outcome_name])
+        encoded_outcome = self.encode_outcome(data[self.outcome_name])
+        outcome_categories = list(self.encoder.categories_[0])
+        data[outcome_categories] = encoded_outcome
         train_text = data['sentences'].tolist()
         train_text = np.array(train_text, dtype=object)[:, np.newaxis]
-        train_label = np.asarray(data[self.outcome_name], dtype = np.int8)
+        train_label = np.asarray(data[outcome_categories], dtype = np.int8)
         model = self.create_estimator(**kwargs)
         history = model.fit(train_text,
                 train_label,
@@ -83,13 +87,15 @@ class SentimentClassifier(object):
         predict_text = data['sentences'].tolist()
         predict_text = np.array(predict_text, dtype=object)[:, np.newaxis]
         predicted = self.estimator.predict(predict_text, batch_size=32)
-        classes = [x[0] for x in predicted]
-        return classes
+        predicted = self.decode_outcome(predicted)
+        return predicted
 
     # TODO: Log loss
     def evaluate_estimator(self, data):
         predicted = self.predict_estimator(data)
-        actual = self.encode_outcome(data[self.outcome_name])
+        actual = data[self.outcome_name]
+        print(predicted)
+        print(actual)
         f1_macro = m.f1_score(actual, predicted, average='macro')
         f1_weighted = m.f1_score(actual, predicted, average='weighted')
         accuracy = m.accuracy_score(actual, predicted)

@@ -22,8 +22,8 @@ def config():
     config = {
         'params': {
             'optimizer': ['Adagrad'],
-            'learning_rate': [0.005, 0.05],
-            'hidden_units': [[256, 100]],
+            'learning_rate': [0.005],
+            'hidden_units': [[256, 100], [256]],
             'embedding_model_trainable': ['False']
             }
         }
