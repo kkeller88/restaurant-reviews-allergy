@@ -42,7 +42,8 @@ class SentimentClassifier(object):
         return outcome
 
     def create_estimator(self, hidden_units=[256], optimizer='Adagrad',
-                            embedding_model_trainable=False, **kwargs):
+                            embedding_model_trainable=False, learning_rate=0.001,
+                            **kwargs):
         def get_dense_layers(embedding, hidden_units):
             previous_layer = embedding
             for n_units in hidden_units:
@@ -50,6 +51,15 @@ class SentimentClassifier(object):
                 current_layer = layers.Dense(n_units, activation='relu')(previous_layer)
                 previous_layer = current_layer
             return previous_layer
+
+        def get_optimizer(optimizer, learning_rate):
+            if optimizer == 'Adam':
+                opt = keras.optimizers.Adam(learning_rate=learning_rate)
+            elif optimizer == 'Adagrad':
+                opt = keras.optimizers.Adagrad(learning_rate=learning_rate)
+            else:
+                msg = f'Optimizer <{optimizer}> not found!'
+            return opt
 
         module_path = os.path.join(
             pathlib.Path(__file__).parents[3],
@@ -62,12 +72,13 @@ class SentimentClassifier(object):
         dense = get_dense_layers(embedding, hidden_units)
         pred = layers.Dense(n_categories, activation='softmax')(dense)
         model = tf.keras.models.Model(input_text, pred)
+        optimizer = get_optimizer(optimizer, learning_rate)
         model.compile(loss='categorical_crossentropy',
         	optimizer=optimizer, metrics=['accuracy'])
 
         return model
 
-    def train_estimator(self, data, **kwargs):
+    def train_estimator(self, data, epochs=10, batch_size=32, **kwargs):
         data = data.copy()
         encoded_outcome = self.encode_outcome(data[self.outcome_name])
         outcome_categories = list(self.encoder.categories_[0])
@@ -79,8 +90,8 @@ class SentimentClassifier(object):
         history = model.fit(train_text,
                 train_label,
                 validation_data=(train_text, train_label),
-                epochs=10,
-                batch_size=32)
+                epochs=epochs,
+                batch_size=batch_size)
         self.estimator = model
 
     def predict_estimator(self, data):
