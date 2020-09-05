@@ -1,7 +1,7 @@
 {
   "params":
   {
-    "optimizer": ["adagrad"],
+    "optimizer": ["Adagrad"],
     "learning_rate": [0.005],
     "hidden_units": [[5]],
     "embedding_model_trainable": ["False"]
