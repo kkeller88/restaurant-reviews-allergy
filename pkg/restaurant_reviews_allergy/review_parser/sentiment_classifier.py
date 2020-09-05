@@ -157,7 +157,7 @@ class SentimentClassifier(object):
     @classmethod
     def load_model_artifacts(cls, path_base):
         if 'model' not in os.listdir(path_base):
-            path_base = os.join(path_base, os.listdir(path_base)[0])
+            path_base = os.path.join(path_base, os.listdir(path_base)[0])
         model_path = os.path.join(path_base, 'model')
         encoder_path = os.path.join(path_base, 'label_encoder.pkl')
         model = tf.python.keras.models.load_model(model_path)
