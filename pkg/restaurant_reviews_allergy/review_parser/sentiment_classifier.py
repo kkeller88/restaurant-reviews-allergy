@@ -94,8 +94,6 @@ class SentimentClassifier(object):
     def evaluate_estimator(self, data):
         predicted = self.predict_estimator(data)
         actual = data[self.outcome_name]
-        print(predicted)
-        print(actual)
         f1_macro = m.f1_score(actual, predicted, average='macro')
         f1_weighted = m.f1_score(actual, predicted, average='weighted')
         accuracy = m.accuracy_score(actual, predicted)
