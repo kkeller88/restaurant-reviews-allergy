@@ -41,6 +41,9 @@ def download_data(run_id, path, format='pkl'):
         )
     if format=='pkl':
         df = pd.read_pickle(path)
+    elif format=='json':
+        with open(path) as f:
+            df = json.load(f)
     else:
         message = 'format {f} was not recognized'.format(f=format)
         raise ValueError(message)

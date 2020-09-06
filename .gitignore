@@ -10,3 +10,4 @@ data/
 notes/
 scripts/ad_hoc/
 mlruns/
+model_config/*
