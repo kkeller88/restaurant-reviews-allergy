@@ -41,14 +41,18 @@ class SentimentClassifier(object):
         outcome = self.encoder.inverse_transform(outcome).ravel()
         return outcome
 
+    # TODO: sequential
     def create_estimator(self, hidden_units=[256], optimizer='Adagrad',
                             embedding_model_trainable=False, learning_rate=0.001,
-                            **kwargs):
+                            dropout=0, **kwargs):
         def get_dense_layers(embedding, hidden_units):
             previous_layer = embedding
             for n_units in hidden_units:
                 print(f'Adding dense layer with {n_units} units!')
                 current_layer = layers.Dense(n_units, activation='relu')(previous_layer)
+                if dropout > 0:
+                    print(f'Adding dropout layer with param {dropout}')
+                    current_layer = layers.Dropout(dropout)(current_layer)
                 previous_layer = current_layer
             return previous_layer
 
@@ -136,6 +140,7 @@ class SentimentClassifier(object):
                 )
             if refit >= best_refit:
                 best_model = clf
+                best_refit = refit
         validation_scores_ = {
             'scores_and_params': validation_scores,
             'best_refit': refit
