@@ -143,7 +143,7 @@ class SentimentClassifier(object):
                 best_refit = refit
         validation_scores_ = {
             'scores_and_params': validation_scores,
-            'best_refit': refit
+            'best_refit': best_refit
             }
         best_model.validation_scores = validation_scores_
         return best_model
