@@ -26,6 +26,8 @@ SPLIT_SENTENCES_RUN_ID ?= bcde4de8d6be492195a9c44a20ef552e
 ANNOTATE_DATA_RUN_ID ?= 4236fc9bc8cc420fbe3aeb286f75fe84
 ANNOTATE_DATA_MODEL_ID ?= fd79683410634413950976f602c463a5
 MODEL_CONFIG_NAME ?= grid_search.json
+APPEND_SENTIMENT_RUN_ID ?= 3b65894f3bb34e70af8d08b054b9d83e
+
 
 create-base-data-local:
 		mlflow run . -e create_base_data \
@@ -43,6 +45,13 @@ append-allergy-labels:
 	mlflow run . -e append_allergy_labels \
 	--experiment-name $(EXPERIMENT_NAME) \
 	-P run_id=$(ANNOTATE_DATA_RUN_ID) \
+	--no-conda
+
+append-sentiment-labels:
+	mlflow run . -e append_sentiment_labels \
+	--experiment-name $(EXPERIMENT_NAME) \
+	-P run_id=$(APPEND_SENTIMENT_RUN_ID) \
+	-P model_run_id=$(ANNOTATE_DATA_MODEL_ID) \
 	--no-conda
 
 train-sentiment-local:
