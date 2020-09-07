@@ -20,17 +20,13 @@ entry_points:
         type: str
         default: 'bcde4de8d6be492195a9c44a20ef552e'
 
-  annotate_data:
-    command: "python scripts/annotate_data/03_annotate_sentences.py
-      --run_id {run_id}
-      --model_run_id {model_run_id} "
+  append_allergy_labels:
+    command: "python scripts/annotate_data/03_append_allergy_labels.py
+      --run_id {run_id}"
     parameters:
       run_id:
         type: str
         default: '4236fc9bc8cc420fbe3aeb286f75fe84'
-      model_run_id:
-        type: str
-        default: 'ca35fe312c894536959fb30fea00b358'
 
   train_sentiment:
     command: "python scripts/train_model/grid_search_sentiment_classifier.py

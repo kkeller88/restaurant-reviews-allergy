@@ -39,11 +39,10 @@ split-sentences-local:
 		-P run_id=$(SPLIT_SENTENCES_RUN_ID) \
 		--no-conda
 
-annotate-data-local:
-	mlflow run . -e annotate_data \
+append-allergy-labels:
+	mlflow run . -e append_allergy_labels \
 	--experiment-name $(EXPERIMENT_NAME) \
 	-P run_id=$(ANNOTATE_DATA_RUN_ID) \
-	-P model_run_id=$(ANNOTATE_DATA_MODEL_ID) \
 	--no-conda
 
 train-sentiment-local:
