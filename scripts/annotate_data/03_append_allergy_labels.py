@@ -8,14 +8,14 @@ import fire
 from restaurant_reviews_allergy.utils.mlflow import MlflowArtifactLogger, download_data
 from restaurant_reviews_allergy.review_parser.allergen_search import simple_allergen_search
 
-INCREMENT = 100000
+INCREMENT = 500000
 N_PROCESSES = 4
 DEFAULT_ALLERGENS = ['allergy', 'celiac', 'intolerant', 'intolerance', 'dairy', 'egg', 'gluten', 'soy', 'peanut', ' nut', 'shellfish', 'wheat', 'seafood']
 ALLERGEN_COLS = ['is_' + allergen.replace(' ','_') for allergen in DEFAULT_ALLERGENS]
 
 def chunk_dataframe(df):
     n_splits = max(1, int(INCREMENT/df.shape[0]))
-    chunks = np.array_split(df, 3)
+    chunks = np.array_split(df, n_splits)
     return chunks
 
 def apply_allergen_labels_and_log(chunk, allergens=DEFAULT_ALLERGENS):
