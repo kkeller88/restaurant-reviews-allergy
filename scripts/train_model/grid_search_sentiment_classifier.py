@@ -15,7 +15,7 @@ from restaurant_reviews_allergy.package_data.package_data import sentiment_train
 from restaurant_reviews_allergy.review_parser.sentiment_classifier import SentimentClassifier
 from restaurant_reviews_allergy.review_parser.sentiment_classifier_pyfunc import _log_model
 from restaurant_reviews_allergy.utils.configs import read_model_config
-from restaurant_reviews_allergy.utils.mlflow import MlflowArtifactLogger, download_data
+from restaurant_reviews_allergy.utils.mlflow_ import MlflowArtifactLogger, download_data
 
 def resample(train):
     train_x = train.drop(['sentiment'], axis=1)

@@ -5,7 +5,7 @@ import numpy as np
 import mlflow
 import fire
 
-from restaurant_reviews_allergy.utils.mlflow import MlflowArtifactLogger, download_data
+from restaurant_reviews_allergy.utils.mlflow_ import MlflowArtifactLogger, download_data
 from restaurant_reviews_allergy.review_parser.allergen_search import simple_allergen_search
 
 N_PROCESSES = 4
