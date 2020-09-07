@@ -2,7 +2,7 @@ import pandas as pd
 import mlflow
 import fire
 
-from restaurant_reviews_allergy.utils.mlflow import MlflowArtifactLogger, download_data
+from restaurant_reviews_allergy.utils.mlflow_ import MlflowArtifactLogger, download_data
 from restaurant_reviews_allergy.review_parser.sentence_splitter import SentenceSplitter
 
 

@@ -48,3 +48,11 @@ def download_data(run_id, path, format='pkl'):
         message = 'format {f} was not recognized'.format(f=format)
         raise ValueError(message)
     return df
+
+def download_chunked_data(run_id, path, format='pkl'):
+    chunk_paths = [
+        x.path for x in
+        mlflow.tracking.MlflowClient().list_artifacts(run_id, path=path)
+        ]
+    for path in chunk_paths:
+        yield download_data(run_id, path, format=format)

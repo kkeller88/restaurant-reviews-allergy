@@ -6,7 +6,7 @@ import pandas as pd
 import fire
 
 from restaurant_reviews_allergy.dataset.base_data import create_base_data, _select_open_restaurants
-from restaurant_reviews_allergy.utils.mlflow import MlflowArtifactLogger
+from restaurant_reviews_allergy.utils.mlflow_ import MlflowArtifactLogger
 
 def main(n_rows):
     base_data = create_base_data(n_rows)
